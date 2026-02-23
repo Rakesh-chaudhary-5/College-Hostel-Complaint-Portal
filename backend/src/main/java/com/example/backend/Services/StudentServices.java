@@ -16,18 +16,41 @@ public class StudentServices {
      private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public String register(User userData) {
-        if(userRepo.existsByEmail(userData.getEmail())) {
-            return "Email Already Registered";
+        User existingUser = userRepo.findByEmail(userData.getEmail());
+
+        if(existingUser!=null){
+
+            if(existingUser.getStatus()==Status.ACTIVE){
+                return "Email already registered. Please login.";
+            }
+            else if(existingUser.getStatus() == Status.PENDING) {
+                return "Your application is already pending approval.";
+            }
+            else if (existingUser.getStatus() == Status.REJECTED) {
+                existingUser.setName(userData.getName());
+                existingUser.setPassword(encoder.encode(userData.getPassword()));
+                existingUser.setStatus(Status.PENDING);
+                existingUser.setRole("student");
+                existingUser.setBirthDate(userData.getBirthDate());
+                existingUser.setDepartment(userData.getDepartment());
+                existingUser.setRoomNo(userData.getRoomNo());
+                existingUser.setIdCardNumber(userData.getIdCardNumber());
+                existingUser.setMobileNumber(userData.getMobileNumber());
+                userRepo.save(existingUser);
+                return "Re-application submitted successfully. Waiting for Admin approval.";            }
         }
-        try{
-            userData.setPassword(encoder.encode(userData.getPassword()));
-            userData.setStatus(Status.PENDING);
-            userData.setRole("student");
-            userRepo.save(userData);
-            return "Registration Successful. Waiting for Admin Approval.";
-        }catch (Exception e){
-            return "Registration Failed";
+        if(userRepo.existsByIdCardNumber(userData.getIdCardNumber())){
+            return "The ID_CARD NUMBER ALREADY EXISTS";
         }
+            try{
+                userData.setPassword(encoder.encode(userData.getPassword()));
+                userData.setStatus(Status.PENDING);
+                userData.setRole("student");
+                userRepo.save(userData);
+                return "Registration Successful. Waiting for Admin Approval.";
+            }catch (Exception e) {
+                return "Registration Failed" + e;
+            }
     }
 
     public String login(User userData) {
