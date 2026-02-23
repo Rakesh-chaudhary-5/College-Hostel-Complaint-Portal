@@ -1,0 +1,8 @@
+# Node
+frontend/node_modules
+
+# Java
+backend/target
+
+# IDE
+.idea
