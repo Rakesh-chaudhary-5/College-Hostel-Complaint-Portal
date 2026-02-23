@@ -37,8 +37,8 @@ function Login() {
         email: "",
         password: "",
       })
+        navigate("/feed");
       }
-      navigate("/feed");
     } catch (err) {
       setMessage("Login failed ❌");
       console.log(err);

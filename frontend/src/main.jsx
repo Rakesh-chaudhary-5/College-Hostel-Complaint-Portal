@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import Feed from './components/Feed';
+import Admin from './components/Admin';
 
 const root = document.getElementById("root");
  const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const root = document.getElementById("root");
         {
             path:"feed",
             element: <Feed />
+        },
+        {
+            path:"admin",
+            element: <Admin />
         }
       ]
     }
